@@ -172,11 +172,11 @@ class InvoiceService
         $pdfContent = $pdf->output();
         $filename = $invoice_number . '.pdf';
 
-        if (!Storage::exists('invoices')) {
-            Storage::makeDirectory('invoices');
-        }
-        Storage::put("invoices/$filename", $pdfContent);
 
+        $result = Storage::put("invoices/$filename", $pdfContent);
+        // Log::info("Archivo guardado: " . ($result ? 'sí' : 'no') . " - invoices/$filename");
+        
+        
         $invoice->path = $filename;
         $invoice->save();
 
