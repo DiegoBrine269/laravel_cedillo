@@ -1,8 +1,7 @@
 # ==============================================================
 # Stage 1: Composer — instala dependencias PHP
 # ==============================================================
-FROM composer:2 AS composer
-
+FROM composer:2.7 AS composer
 WORKDIR /app
 COPY composer.json composer.lock ./
 RUN composer install \
@@ -16,7 +15,7 @@ RUN composer install \
 # ==============================================================
 # Stage 2: App — imagen final de producción
 # ==============================================================
-FROM php:8.4.6-fpm-alpine
+FROM php:8.4.5-fpm-alpine3.20
 
 # Dependencias del sistema
 RUN apk add --no-cache \
