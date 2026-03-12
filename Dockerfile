@@ -10,7 +10,8 @@ RUN composer install \
     --no-interaction \
     --no-scripts \
     --prefer-dist \
-    --optimize-autoloader
+    --optimize-autoloader \
+    --verbose
 
 # ==============================================================
 # Stage 2: App — imagen final de producción
