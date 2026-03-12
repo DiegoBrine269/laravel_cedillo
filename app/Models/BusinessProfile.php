@@ -30,6 +30,6 @@ class BusinessProfile extends Model
 
     public static function current(): self
     {
-        return static::firstOrCreate(['id' => 1]);
+        return static::find(1) ?? static::create(['id' => 1]);
     }
 }
