@@ -51,10 +51,6 @@
             padding-left: 0;
         }
 
-        td {
-            /* text-align: center; */
-            /* vertical-align: middle; */
-        }
 
 
 
@@ -70,7 +66,7 @@
         }
 
         .nombre {
-            font-size: 15px;
+            font-size: 23pt;
         }
 
         .titulo {
@@ -101,8 +97,37 @@
         .lista td, .lista th {
             border: 1px solid rgb(104, 103, 103);
             border-collapse: collapse;
-            padding: 2px 4px;
+            padding: 4px 6px;
             height: 15px;
+        }
+
+        /* Alternar color */
+        .lista tr:nth-child(even) {
+            background-color: #b0cfe09c;
+        }
+
+        .encabezado-azul {
+            background-color: #16365C;
+            color: white;
+            font-weight: bold;
+        }
+
+        .encabezado-rojo {
+            background-color: #FF0000;
+            color: white;
+            font-weight: bold;
+        }
+
+        .border {
+            border: 1px solid black;
+        }
+
+        .no-border {
+            border: none!important;
+        }
+
+        .no-bg {
+            background-color: transparent;
         }
 
     </style>
@@ -111,31 +136,52 @@
     <header>
         <table>
             <tr>
-                <td style="width: 32%; padding:20px">
-                    <img class="logo" src="{{ public_path('images/logo-invoice.jpg') }}" alt="Logotipo de neongonz">
-                </td>
-                
                 <td>
                     <div class="header-text">
-                        <p class="nombre bold">{{ $businessProfile->business_name }}</p>
-                    </div>
-                    
-                    <div style="text-align: center; font-size: 11px">
-                        <p>{{ $businessProfile->legal_name }} {{ $businessProfile->rfc }}</p>
-                        <p>{{ $businessProfile->address }}</p>
-                        <p>Correo: {{ $businessProfile->email }}</p>
-                        <p>Teléfono: {{ $businessProfile->phone }}</p>
+                        <p class="nombre bold ">{{ $businessProfile->business_name }}</p>
                     </div>
 
                 </td>
-        
-                <td style="width: 32%; padding-left:5px;">
-                    <div style="width:100%; border: 1px solid black; padding: 8px; font-size: 10px;">
-                        <p class="bold" style=" text-align: center; text-transform: uppercase">Cotización</p>
-                        <p><span class="bold" >Número:</span> {{$invoice->invoice_number}}</p>
-                        <p><span class="bold" >Lugar de expedición</span>: Ciudad de México</p>
-                        <p><span class="bold" >Fecha de expedición</span>: {{$date}}</p>
-                    </div>
+                <td style="width: 32%; padding:20px">
+                    <img class="logo" src="{{ public_path('images/logo.jpeg') }}" alt="Logotipo de empresa">
+                </td>
+
+            </tr>
+            <tr>
+                <td>
+                    <h2 class="">Cotización</h2>
+                </td>
+                <td>
+                    Fecha: {{$date}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p><span class="bold" style="font-size: 10pt">Número de proveedor: 4413887</span></p>
+                    <p style="width: 25em">{{ $businessProfile->address }}</p>
+                    <p>Tel. {{ $businessProfile->phone }}</p>
+                    <p>{{ $businessProfile->email }}</p>
+                </td>
+                <td>
+                    <table class="lista" cellspacing="0" cellpadding="0">
+                        <thead>
+                            <tr>
+                                <th class="no-bg" colspan="2" class="encabezado-rojo">CLIENTE</th>
+                            </tr>
+                            <tr>
+                                <td class="no-bg">Contacto</td>
+                                <td class="no-bg">{{ $responsible->name }}</td>
+                            </tr>
+                            <tr>
+                                <td class="no-bg">Empresa</td>
+                                <td class="no-bg">BIMBO, SA de CV</td>   
+                            </tr>
+                            <tr>
+                                <td class="no-bg">Centro</td>
+                                <td class="no-bg">{{ $invoice->centre->name }}</td>    
+                            </tr>
+                        </thead>
+                    </table>
                 </td>
             </tr>
         </table>
@@ -148,46 +194,29 @@
     <main>
 
         <br>
-        <p class="bold">Cotización para:</p>
-        <table class="destinatario">
-            <tr>
-                <td style="width: 75%; padding:0">
-                    BIMBO, S.A DE C.V
-                </td>
-                <td><p style="line-height: 0; margin:0; text-align: right"><span class="bold">At'n:</span> {{ $responsible->name }}</p> </td>
-            </tr>
-            <tr>
-                <td>
-                    {{ $invoice->centre->name }}
-                </td>
-            </tr>
-        </table>
     
-        <br>
-    
-        @if ($invoice->comments)
-            <p><span class="bold">Comentarios o instrucciones especiales:</span> {{$invoice->comments}} </p>
-        @endif
         <table class="lista" cellspacing="0" cellpadding="0">
             <tr>
-                <th class="bold">Cantidad</th>
-                <th class="bold">Descripción</th>
-                <th class="bold">Precio</th>
-                <th class="bold">Total</th>
+                <th class="encabezado-azul">Concepto</th>
+                <th class="encabezado-azul">Cantidad</th>
+                <th class="encabezado-azul">P.U</th>
+                <th class="encabezado-azul">Importe</th>
             </tr>
 
+
             @php
-                $grandTotal = 0; // Variable para acumular el total
+                $grandTotal = 0;
+                $totalRows = 0;
             @endphp
 
 
             @if($invoice->rows->count() > 0)
                 @foreach ($invoice->rows as $row)
                     <tr>
-                        <td class="text-center" style="min-width: 70px">{{ $row->quantity }}</td>
                         <td >
                             {{ $row->concept }} 
                         </td>
+                        <td class="text-center" style="min-width: 70px">{{ $row->quantity }}</td>
                         <td class="text-right" style="min-width: 70px"><span class="text-left">$</span> {{ number_format($row->price, 2) }}</td>
                         <td class="text-right" style="min-width: 70px"><span class="text-left">$</span> {{ number_format($row->total, 2) }}</td>
                     </tr>
@@ -209,13 +238,15 @@
                                 // $grouped_vehicles = $data['group']; // Obtén el grupo de vehículos
                                 $totalForGroup = $grouped_vehicles_by_type->sum('price'); // Calcula el total del grupo
                                 $grandTotal += $totalForGroup; 
+
+                                $totalRows++;
                             @endphp
                             <tr>
-                                <td class="text-center" style="min-width: 70px">{{ count( $grouped_vehicles_by_type) }}</td>
                                 <td >
                                     {{ $project->service . " (" . $type ."):" }} 
                                     {{ implode(', ', $grouped_vehicles_by_type->pluck('eco')->toArray()) }}
                                 </td>
+                                <td class="text-center" style="min-width: 70px">{{ count( $grouped_vehicles_by_type) }}</td>
                                 <td class="text-right" style="min-width: 70px"><span class="text-left">$</span> {{ number_format($price,2) }}</td>
                                 <td class="text-right" style="min-width: 70px"><span class="text-left">$</span> {{ number_format($totalForGroup, 2) }}</td>
                             </tr>
@@ -226,12 +257,33 @@
 
 
 
-                <tr><td></td><td></td><td></td> <td></td></tr>
+                {{-- Acompletar para que sean mínimo 10 filas --}}
+                @for($i = $totalRows; $i < 10; $i++)
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                @endfor
+
                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td class="text-right">SUBTOTAL</td>                    
-                    <td class="text-right"><span class="text-left">$</span> {{ number_format($grandTotal, 2)}} </td>
+                    <td class="no-border no-bg"></td>
+                    <td class="no-border no-bg"></td>
+                    <td class="encabezado-azul">SUBTOTAL</td>                    
+                    <td class="text-right encabezado-azul"><span class="text-left">$</span> {{ number_format($grandTotal, 2)}} </td>
+                </tr>
+                <tr>
+                    <td class="no-border no-bg"></td>
+                    <td class="no-border no-bg"></td>
+                    <td class="encabezado-azul">IVA</td>                    
+                    <td class="text-right encabezado-azul"><span class="text-left">$</span> {{ number_format($grandTotal*0.16, 2)}} </td>
+                </tr>
+                <tr>
+                    <td class="no-border no-bg"></td>
+                    <td class="no-border no-bg"></td>
+                    <td class="encabezado-azul">TOTAL</td>                    
+                    <td class="text-right encabezado-azul"><span class="text-left">$</span> {{ number_format($grandTotal*1.16, 2)}} </td>
                 </tr>
         </table>
     </main>
@@ -239,8 +291,13 @@
     <br>
 
     <footer>
-        <p class="bold">NOTA: Los precios antes mencionados no incluyen IVA.</p>
-        <p>Si tiene alguna duda con respecto a esta cotización, favor de comunicarse al {{ $businessProfile->phone }} con atención a {{ $businessProfile->contact_name }}.</p>
+        <p class="bold">Términos</p>
+        <ol>
+            <li>Este documento es informativo y no tiene ningún valor fiscal</li>
+            <li>Precios en Moneda Nacional.</li>
+            <li>Esta cotización tiene vigencia de 15 días hábiles a partir de la fecha de expedición</li>
+            <li>Sus datos personales están seguros y se manejan de acuerdo al aviso de privacidad.</li>
+        </ol>
     </footer>
 
 </body>
