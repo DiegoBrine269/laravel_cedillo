@@ -16,7 +16,7 @@ RUN composer install \
 # ==============================================================
 # Stage 2: App — imagen final de producción
 # ==============================================================
-FROM php:8.4-fpm-alpine
+FROM php:8.4.6-fpm-alpine
 
 # Dependencias del sistema
 RUN apk add --no-cache \
