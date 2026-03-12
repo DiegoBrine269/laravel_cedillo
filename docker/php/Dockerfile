@@ -30,7 +30,7 @@ WORKDIR /var/www
 
 COPY . .
 
-RUN cp .env.example .env
+
 
 RUN composer install --no-dev --optimize-autoloader
 
