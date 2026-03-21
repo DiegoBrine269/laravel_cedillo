@@ -212,12 +212,15 @@ class InvoicesController extends Controller
             ], 422);
         }
 
-        [$invoice, $pdfContent, $filename] = $service->saveInvoice($fields);
+        [$filename] = $service->saveInvoice($fields);
 
-        return response($pdfContent, 200)
-            ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
-            ->header('Access-Control-Expose-Headers', 'Content-Disposition');
+        $path = Storage::path("invoices/$filename");
+
+        return response()->download($path, $filename, [
+            'Content-Type'                  => 'application/pdf',
+            'Content-Length'                => filesize($path),
+            'Access-Control-Expose-Headers' => 'Content-Disposition, Content-Length',
+        ]);
     }
 
     public function createCustom(StoreCustomInvoiceRequest $request)
