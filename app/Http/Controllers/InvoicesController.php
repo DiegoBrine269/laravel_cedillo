@@ -201,7 +201,7 @@ class InvoicesController extends Controller
         $fields = $request->validated();
         
         $projectVehicleIds = collect($fields['vehicles'])->pluck('id')->toArray();
- 
+
         $alreadyAssigned = ProjectVehicle::whereIn('id', $projectVehicleIds)
             ->whereNotNull('invoice_id')
             ->exists();
@@ -214,9 +214,9 @@ class InvoicesController extends Controller
 
         [$invoice, $pdfContent, $filename] = $service->saveInvoice($fields);
 
-        return response()->streamDownload(function () use ($filename) {
-            echo Storage::get("invoices/$filename");
-        }, $filename, [
+        $path = Storage::path("invoices/$filename");
+
+        return response()->download($path, $filename, [
             'Content-Type' => 'application/pdf',
             'Access-Control-Expose-Headers' => 'Content-Disposition',
         ]);
