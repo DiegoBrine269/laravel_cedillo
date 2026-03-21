@@ -214,10 +214,12 @@ class InvoicesController extends Controller
 
         [$invoice, $pdfContent, $filename] = $service->saveInvoice($fields);
 
-        return response($pdfContent, 200)
-            ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
-            ->header('Access-Control-Expose-Headers', 'Content-Disposition');
+        return response()->streamDownload(function () use ($filename) {
+            echo Storage::get("invoices/$filename");
+        }, $filename, [
+            'Content-Type' => 'application/pdf',
+            'Access-Control-Expose-Headers' => 'Content-Disposition',
+        ]);
     }
 
     public function createCustom(StoreCustomInvoiceRequest $request)
