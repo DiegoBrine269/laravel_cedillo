@@ -201,7 +201,7 @@ class InvoicesController extends Controller
         $fields = $request->validated();
         
         $projectVehicleIds = collect($fields['vehicles'])->pluck('id')->toArray();
-
+ 
         $alreadyAssigned = ProjectVehicle::whereIn('id', $projectVehicleIds)
             ->whereNotNull('invoice_id')
             ->exists();
@@ -214,12 +214,10 @@ class InvoicesController extends Controller
 
         [$invoice, $pdfContent, $filename] = $service->saveInvoice($fields);
 
-        $path = Storage::path("invoices/$filename");
-
-        return response()->download($path, $filename, [
-            'Content-Type' => 'application/pdf',
-            'Access-Control-Expose-Headers' => 'Content-Disposition',
-        ]);
+        return response($pdfContent, 200)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
+            ->header('Access-Control-Expose-Headers', 'Content-Disposition');
     }
 
     public function createCustom(StoreCustomInvoiceRequest $request)
