@@ -212,7 +212,7 @@ class InvoicesController extends Controller
             ], 422);
         }
 
-        [$filename] = $service->saveInvoice($fields);
+        [$invoice, $pdfContent, $filename] = $service->saveInvoice($fields);
 
         $path = Storage::path("invoices/$filename");
 
